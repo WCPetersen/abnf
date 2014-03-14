@@ -96,6 +96,12 @@ class ABNF
 	  yield :rbracket, (t = $&)
 	when /\A\d+/
 	  yield :int, (t = $&).to_i
+	when /\A'([ -&(-~]*)'/
+	  es = []
+	  (t = $&)[1...-1].each_byte {|b|
+	    es << Term.new(NatSet.new(b))
+	  }
+	  yield :val, Seq.new(*es)
 	when /\A"([ !#-~]*)"/
 	  es = []
 	  (t = $&)[1...-1].each_byte {|b|
